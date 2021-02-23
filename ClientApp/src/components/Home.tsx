@@ -43,6 +43,7 @@ export const Home = () => {
     }
 
 		const runTests = async () => {
+      await reset();
 			await runTest("Empty Ping Request", "/api/work/ping");
       await reset();
 			await runTest("100k data", workUrl(200, 100 * 1024));
