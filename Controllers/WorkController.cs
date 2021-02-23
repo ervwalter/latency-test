@@ -11,7 +11,7 @@ namespace Latency.Controllers
     public class WorkController : ControllerBase
     {
         [HttpGet]
-        public async Task<byte[]> Get(int delay = 1000, int size = 256)
+        public async Task<byte[]> Get(int delay = 200, int size = 256)
         {
             var stopwatch = Stopwatch.StartNew();
             var randomData = new byte[(int)(size * 0.75)];
@@ -22,6 +22,12 @@ namespace Latency.Controllers
                 await Task.Delay(10);
             }
             return randomData;
+        }
+
+        [HttpGet]
+        [Route("ping")]
+        public void Ping() {
+
         }
     }
 }
