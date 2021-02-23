@@ -38,31 +38,44 @@ export const Home = () => {
 			return `/api/work?delay=${delay}&size=${size}`;
 		};
 
+    const reset = async () => {
+      await get("/api/work?delay=0&size=10");
+    }
+
 		const runTests = async () => {
 			await runTest("Empty Ping Request", "/api/work/ping");
+      await reset();
 			await runTest("100k data", workUrl(200, 100 * 1024));
+      await reset();
 			await runTest("500k data", workUrl(200, 500 * 1024));
+      await reset();
 			await runTest("1MB data", workUrl(200, 1 * 1024 * 1024));
+      await reset();
 			await runTest("2MB data", workUrl(200, 2 * 1024 * 1024));
+      await reset();
 			await runTest("3MB data", workUrl(200, 3 * 1024 * 1024));
+      await reset();
 			await runTest("4MB data", workUrl(200, 4 * 1024 * 1024));
+      await reset();
 			await runTest("5MB data", workUrl(200, 5 * 1024 * 1024));
+      await reset();
 			await runTest("10MB data", workUrl(200, 10 * 1024 * 1024));
-			await runTest("50MB data", workUrl(200, 50 * 1024 * 1024));
-			await runTest("100MB data", workUrl(200, 100 * 1024 * 1024));
+      await reset();
 			await runTest(
-				"5MB data, 1s of simulated work in a single request",
-				workUrl(1000, 5000 * 1024),
+				"2MB data, 1s of simulated work in a single request",
+				workUrl(1000, 10 * 200 * 1024),
 				1
 			);
+      await reset();
 			await runTest(
-				"5MB data, 1s of simulated work across 5 requests",
-				workUrl(200, 1000 * 1024),
+				"2MB data, 1s of simulated work across 5 requests",
+				workUrl(200, 5 * 200 * 1024),
 				5
 			);
+      await reset();
 			await runTest(
-				"5MB data, 1s of simulated work across 10 requests",
-				workUrl(100, 500 * 1024),
+				"2MB data, 1s of simulated work across 10 requests",
+				workUrl(100, 1 * 200 * 1024),
 				10
 			);
 
