@@ -70,7 +70,7 @@ export const Home = () => {
       await reset();
 			await runTest(
 				"2MB data, 1s of simulated work across 5 requests",
-				workUrl(200, 5 * 200 * 1024),
+				workUrl(200, 2 * 200 * 1024),
 				5
 			);
       await reset();
