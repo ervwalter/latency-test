@@ -69,6 +69,14 @@ export const Home = () => {
 				await reset();
 				await runTest("Empty Request", "/api/work/ping");
 				await reset();
+				await runTest("5k data, 200ms sleep time", workUrl(200, 5000));
+				await reset();
+				await runTest("10k data, 200ms sleep time", workUrl(200, 10000));
+				await reset();
+				await runTest("20k data, 200ms sleep time", workUrl(200, 20000));
+				await reset();
+				await runTest("50k data, 200ms sleep time", workUrl(200, 50000));
+				await reset();
 				await runTest("100k data, 200ms sleep time", workUrl(200, 100000));
 				await reset();
 				await runTest("500k data, 200ms sleep time", workUrl(200, 500000));
