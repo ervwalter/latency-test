@@ -64,7 +64,7 @@ export const Home = () => {
 		};
 
 		const runTests = async () => {
-			while (true) {
+			for (let count = 0; count < 30; count++) {
 				setIteration((prev) => prev + 1);
 				await reset();
 				await runTest("Empty Request", "/api/work/ping");
