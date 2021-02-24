@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 interface Stat {
 	test: string;
 	time: number;
+	count: number;
 }
 
 const get = async (url: string) => {
@@ -12,13 +13,24 @@ const get = async (url: string) => {
 export const Home = () => {
 	const [stats, setStats] = useState<Stat[]>([]);
 	const [running, setRunning] = useState("");
+	const [iteration, setIteration] = useState(0);
 
 	useEffect(() => {
-		const addResult = (test: string, start: number, end: number) => {
-			setStats((prevStats) => [
-				...prevStats,
-				{ test, time: (end - start) / 1000 },
-			]);
+		const updateResult = (test: string, start: number, end: number) => {
+			setStats((prevStats) => {
+				const item = prevStats.find((s) => s.test === test);
+				if (item) {
+					item.time += (end - start) / 1000;
+					item.count++;
+				} else {
+					prevStats.push({
+						test,
+						time: (end - start) / 1000,
+						count: 1,
+					});
+				}
+				return prevStats;
+			});
 		};
 
 		const runTest = async (
@@ -31,7 +43,7 @@ export const Home = () => {
 			for (let i = 0; i < times; i++) {
 				await get(url);
 			}
-			addResult(test, start, performance.now());
+			updateResult(test, start, performance.now());
 		};
 
 		const workUrl = (delay: number, size: number) => {
@@ -43,44 +55,45 @@ export const Home = () => {
 		};
 
 		const runTests = async () => {
-			await reset();
-			await runTest("Empty Ping Request", "/api/work/ping");
-			await reset();
-			await runTest("100k data", workUrl(200, 100 * 1024));
-			await reset();
-			await runTest("500k data", workUrl(200, 500 * 1024));
-			await reset();
-			await runTest("1MB data", workUrl(200, 1 * 1024 * 1024));
-			await reset();
-			await runTest("2MB data", workUrl(200, 2 * 1024 * 1024));
-			await reset();
-			await runTest("3MB data", workUrl(200, 3 * 1024 * 1024));
-			await reset();
-			await runTest("4MB data", workUrl(200, 4 * 1024 * 1024));
-			await reset();
-			await runTest("5MB data", workUrl(200, 5 * 1024 * 1024));
-			await reset();
-			await runTest("10MB data", workUrl(200, 10 * 1024 * 1024));
-			await reset();
-			await runTest(
-				"2MB data, 1s of simulated work in a single request",
-				workUrl(1000, 10 * 200 * 1024),
-				1
-			);
-			await reset();
-			await runTest(
-				"2MB data, 1s of simulated work across 5 requests",
-				workUrl(200, 2 * 200 * 1024),
-				5
-			);
-			await reset();
-			await runTest(
-				"2MB data, 1s of simulated work across 10 requests",
-				workUrl(100, 1 * 200 * 1024),
-				10
-			);
-
-			setRunning("");
+			while (true) {
+				setIteration((prev) => prev + 1);
+				await reset();
+				await runTest("Empty Request", "/api/work/ping");
+				await reset();
+				await runTest("100k data", workUrl(200, 100 * 1024));
+				await reset();
+				await runTest("500k data", workUrl(200, 500 * 1024));
+				await reset();
+				await runTest("1MB data", workUrl(200, 1 * 1024 * 1024));
+				await reset();
+				await runTest("2MB data", workUrl(200, 2 * 1024 * 1024));
+				await reset();
+				await runTest("3MB data", workUrl(200, 3 * 1024 * 1024));
+				await reset();
+				await runTest("4MB data", workUrl(200, 4 * 1024 * 1024));
+				await reset();
+				await runTest("5MB data", workUrl(200, 5 * 1024 * 1024));
+				await reset();
+				await runTest("10MB data", workUrl(200, 10 * 1024 * 1024));
+				await reset();
+				await runTest(
+					"2MB data, 1s of simulated work in a single request",
+					workUrl(1000, 10 * 200 * 1024),
+					1
+				);
+				await reset();
+				await runTest(
+					"2MB data, 1s of simulated work across 5 requests",
+					workUrl(200, 2 * 200 * 1024),
+					5
+				);
+				await reset();
+				await runTest(
+					"2MB data, 1s of simulated work across 10 requests",
+					workUrl(100, 1 * 200 * 1024),
+					10
+				);
+			}
 		};
 
 		runTests();
@@ -89,7 +102,9 @@ export const Home = () => {
 	return (
 		<>
 			<h1>{window.location.hostname.split(".")[0]}</h1>
-      <br/>
+			<p>
+				<b>Iterations: {iteration}</b>
+			</p>
 			<table className="table" style={{ width: "auto" }}>
 				<thead>
 					<tr>
@@ -101,16 +116,16 @@ export const Home = () => {
 					{stats.map((stat) => (
 						<tr key={stat.test}>
 							<td>{stat.test}</td>
-							<td>{stat.time.toFixed(3)}s</td>
+							<td>{(stat.time / stat.count).toFixed(3)}s</td>
 						</tr>
 					))}
 
-					{running && (
+					{/* {running && (
 						<tr key={running}>
 							<td>{running}</td>
 							<td>...</td>
 						</tr>
-					)}
+					)} */}
 				</tbody>
 			</table>
 		</>
