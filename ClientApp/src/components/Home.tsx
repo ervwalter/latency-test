@@ -64,45 +64,52 @@ export const Home = () => {
 		};
 
 		const runTests = async () => {
-			for (let count = 0; count < 30; count++) {
+			for (let count = 0; count < 20; count++) {
 				setIteration((prev) => prev + 1);
 				await reset();
 				await runTest("Empty Request", "/api/work/ping");
 				await reset();
-				await runTest("100k data", workUrl(200, 100 * 1024));
+				await runTest("100k data, 200ms sleep time", workUrl(200, 100000));
 				await reset();
-				await runTest("500k data", workUrl(200, 500 * 1024));
+				await runTest("500k data, 200ms sleep time", workUrl(200, 500000));
 				await reset();
-				await runTest("1MB data", workUrl(200, 1 * 1024 * 1024));
+				await runTest("1MB data, 200ms sleep time", workUrl(200, 1000000));
 				await reset();
-				await runTest("2MB data", workUrl(200, 2 * 1024 * 1024));
+				await runTest("2MB data, 200ms sleep time", workUrl(200, 2000000));
 				await reset();
-				await runTest("3MB data", workUrl(200, 3 * 1024 * 1024));
-				await reset();
-				await runTest("4MB data", workUrl(200, 4 * 1024 * 1024));
-				await reset();
-				await runTest("5MB data", workUrl(200, 5 * 1024 * 1024));
-				await reset();
-				await runTest("10MB data", workUrl(200, 10 * 1024 * 1024));
+				await runTest("3MB data, 200ms sleep time", workUrl(200, 3000000));
 				await reset();
 				await runTest(
-					"2MB data, 1s of simulated work in a single request",
-					workUrl(1000, 10 * 200 * 1024),
+					"100k data, 1s of sleep time, 1 requests",
+					workUrl(1000, 100000),
 					1
 				);
 				await reset();
 				await runTest(
-					"2MB data, 1s of simulated work across 5 requests",
-					workUrl(200, 2 * 200 * 1024),
+					"100k data, 1s of sleep time, split across 5 requests",
+					workUrl(200, 20000),
 					5
 				);
 				await reset();
 				await runTest(
-					"2MB data, 1s of simulated work across 10 requests",
-					workUrl(100, 1 * 200 * 1024),
+					"100k data, 1s of sleep time, split across 10 requests",
+					workUrl(100, 10000),
 					10
 				);
-			}
+				await reset();
+				await runTest(
+					"100k data, 1s of sleep time, split across 15 requests",
+					workUrl(66, 6667),
+					15
+				);
+				await reset();
+				await runTest(
+					"100k data, 1s of sleep time, split across 20 requests",
+					workUrl(50, 5000),
+					20
+				);
+
+      }
 		};
 
 		runTests();
