@@ -59,64 +59,48 @@ export const Home = () => {
 			return `/api/work?delay=${delay}&size=${size}`;
 		};
 
-		const reset = async () => {
+		const warmup = async () => {
 			await get("/api/work?delay=0&size=10");
 		};
 
 		const runTests = async () => {
 			for (let count = 0; count < 20; count++) {
 				setIteration((prev) => prev + 1);
-				await reset();
+				await warmup();
 				await runTest("Empty Request", "/api/work/ping");
-				await reset();
 				await runTest("5k data, 200ms sleep time", workUrl(200, 5000));
-				await reset();
 				await runTest("10k data, 200ms sleep time", workUrl(200, 10000));
-				await reset();
 				await runTest("20k data, 200ms sleep time", workUrl(200, 20000));
-				await reset();
 				await runTest("50k data, 200ms sleep time", workUrl(200, 50000));
-				await reset();
 				await runTest("100k data, 200ms sleep time", workUrl(200, 100000));
-				await reset();
 				await runTest("500k data, 200ms sleep time", workUrl(200, 500000));
-				await reset();
 				await runTest("1MB data, 200ms sleep time", workUrl(200, 1000000));
-				await reset();
 				await runTest("2MB data, 200ms sleep time", workUrl(200, 2000000));
-				await reset();
-				await runTest("3MB data, 200ms sleep time", workUrl(200, 3000000));
-				await reset();
 				await runTest(
 					"100k data, 1s of sleep time, 1 requests",
 					workUrl(1000, 100000),
 					1
 				);
-				await reset();
 				await runTest(
 					"100k data, 1s of sleep time, split across 5 requests",
 					workUrl(200, 20000),
 					5
 				);
-				await reset();
 				await runTest(
 					"100k data, 1s of sleep time, split across 10 requests",
 					workUrl(100, 10000),
 					10
 				);
-				await reset();
 				await runTest(
 					"100k data, 1s of sleep time, split across 15 requests",
 					workUrl(66, 6667),
 					15
 				);
-				await reset();
 				await runTest(
 					"100k data, 1s of sleep time, split across 20 requests",
 					workUrl(50, 5000),
 					20
 				);
-
       }
 		};
 
