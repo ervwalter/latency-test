@@ -17,18 +17,29 @@ export const Home = () => {
 	useEffect(() => {
 		const updateResult = (test: string, start: number, end: number) => {
 			setStats((prevStats) => {
-				const item = prevStats.find((s) => s.test === test);
-				if (item) {
-					item.time += (end - start) / 1000;
-					item.count++;
-				} else {
-					prevStats.push({
-						test,
-						time: (end - start) / 1000,
-						count: 1,
+				const match = prevStats.find((s) => s.test === test);
+				if (match) {
+					return prevStats.map((stat) => {
+						if (stat !== match) {
+							return stat;
+						}
+
+						return {
+							...stat,
+							time: stat.time + (end - start) / 1000,
+							count: stat.count + 1,
+						};
 					});
+				} else {
+					return [
+						...prevStats,
+						{
+							test,
+							time: (end - start) / 1000,
+							count: 1,
+						},
+					];
 				}
-				return prevStats;
 			});
 		};
 
