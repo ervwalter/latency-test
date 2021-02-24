@@ -12,7 +12,6 @@ const get = async (url: string) => {
 
 export const Home = () => {
 	const [stats, setStats] = useState<Stat[]>([]);
-	const [running, setRunning] = useState("");
 	const [iteration, setIteration] = useState(0);
 
 	useEffect(() => {
@@ -38,7 +37,6 @@ export const Home = () => {
 			url: string,
 			times: number = 1
 		) => {
-			setRunning(test);
 			const start = performance.now();
 			for (let i = 0; i < times; i++) {
 				await get(url);
